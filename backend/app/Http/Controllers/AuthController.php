@@ -63,7 +63,8 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User successfully registered',
-            'user' => $user
+            'user_id' => $user->id,
+            'username' => $user->name
         ], 201);
     }
 
@@ -105,11 +106,11 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     protected function createNewToken($token){
+        $user = auth()->user();
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'user_id' => $user->id,
+            'username' => $user->name
         ]);
     }
 }
