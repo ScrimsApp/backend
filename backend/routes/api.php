@@ -36,7 +36,8 @@ Route::group([
     Route::post('/', [TeamController::class, 'store']);
     Route::post('/update', [TeamController::class, 'update']);
     Route::post('/remove', [TeamController::class, 'removeTeam']);
-    Route::get('/{id}', [TeamController::class, 'show']);
+    Route::get('/{id}', [TeamController::class, 'getTeam']);
+    Route::get('/user/{id}', [TeamController::class, 'getTeamUser']);
     // Player
     Route::delete('/player/{id}', [TeamController::class, 'removePlayer']);
     Route::get('/player/add/{id}', [TeamController::class, 'addPlayer']);

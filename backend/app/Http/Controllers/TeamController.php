@@ -39,7 +39,7 @@ class TeamController extends Controller
         return response()->json($return);
     }
 
-    public function show($id){
+    public function getTeam($id){
 
         if(Team::find($id)){ 
 
@@ -47,6 +47,23 @@ class TeamController extends Controller
             $team = Team::find($id);
             $team['players'] = $players;
 
+            return response()->json($team);
+        }else{
+            return response()->json(['message' => 'Team does not exist!']);
+        }
+        
+    }
+
+    public function getTeamUser($id){
+
+        $user = User::find($id);
+        if(Team::find($user->team_id)){ 
+
+            $players = Team::find($user->team_id)->players;
+            $team = Team::find($user->team_id);
+            $team['players'] = $players;
+            //$invites = $team->invites;
+            //$team['invites'] = $invites;
             return response()->json($team);
         }else{
             return response()->json(['message' => 'Team does not exist!']);
