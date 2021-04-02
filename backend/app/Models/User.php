@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'team_id'
     ];
 
     /**
@@ -60,4 +61,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     }  
+
+
+    public function team(){
+        return $this->belongsTo(Team::class);
+    }
+
 }
