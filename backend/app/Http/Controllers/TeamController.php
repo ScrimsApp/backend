@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
 {
@@ -14,20 +15,25 @@ class TeamController extends Controller
         $teams = Team::all();
         for($i = 0; $i < count($teams); $i++){
             $teams[$i]->players; 
+            $teams[$i]->invites;
         }
         return $teams;
     }
 
     public function store(Request $request){ 
-        
+        $image = $request->image->store("teams");
         $team = $request->all();
         if(auth()->user()->team_id != null){ return response()->json(['message' => "It was not possible to create the team, you have or are already in a team!"]); }
         $newTeam = Team::create([
             'name' => $team['name'],
             'tag' => $team['tag'],
-            'image' => $team['image'],
             'user_id' => auth()->user()->id,
         ]);
+        if($request->image){
+            
+            $newTeam->image = $image;
+        }
+        
         if($newTeam->save()) {
             $user = auth()->user();
             $user->team_id = $newTeam->id;
@@ -44,9 +50,10 @@ class TeamController extends Controller
         if(Team::find($id)){ 
 
             $players = Team::find($id)->players;
+            $invites = Team::find($id)->invites;
             $team = Team::find($id);
             $team['players'] = $players;
-
+            $team['invites'] = $invites;
             return response()->json($team);
         }else{
             return response()->json(['message' => 'Team does not exist!']);
@@ -60,8 +67,10 @@ class TeamController extends Controller
         if(Team::find($user->team_id)){ 
 
             $players = Team::find($user->team_id)->players;
+            $invites = Team::find($user->team_id)->invites;
             $team = Team::find($user->team_id);
             $team['players'] = $players;
+            $team['invites'] = $invites;
             //$invites = $team->invites;
             //$team['invites'] = $invites;
             return response()->json($team);
@@ -79,6 +88,17 @@ class TeamController extends Controller
                 $dados_atualizados = $request->all();
                 $team->name = $dados_atualizados['name'];
                 $team->tag = $dados_atualizados['tag'];
+                if($request->image){
+                    //apaga imagem anterior
+                    Storage::delete($team->image);
+        
+                    //cria a imagem;
+                    $imagem = $request->image->store('teams');
+        
+                    //atualiza o endereço da imagem no banco
+                    $team->image = $imagem;
+                    $team->save();
+                }
                 $return = $team->update() ? ['message' => "Team updated successfully!"] : ['message' => 'Error when updating the team!'];
                 return response()->json($return);
             }else{ 
