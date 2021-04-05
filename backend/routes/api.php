@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\InviteTeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,5 +42,13 @@ Route::group([
     // Player
     Route::delete('/player/{id}', [TeamController::class, 'removePlayer']);
     Route::get('/player/add/{id}', [TeamController::class, 'addPlayer']);
+
+    //Invite
+    Route::post('/invite/player', [InviteTeamController::class, 'invitePlayer']);
+    Route::post('/invite/team', [InviteTeamController::class, 'inviteTeam']);
+    Route::post('/invite/player/accept', [InviteTeamController::class, 'acceptInvitePlayer']);
+    Route::post('/invite/player/decline', [InviteTeamController::class, 'declineInvitePlayer']);
+    Route::post('/invite/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
+    Route::post('/invite/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
 });
-Route::get('/', [TeamController::class, 'index']);
+Route::get('team/', [TeamController::class, 'index']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Team;
 use Validator;
 
 class AuthController extends Controller
@@ -34,7 +35,7 @@ class AuthController extends Controller
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(["message" => "Invalid credentials"], 401);
         }
 
         return $this->createNewToken($token);
@@ -107,10 +108,21 @@ class AuthController extends Controller
      */
     protected function createNewToken($token){
         $user = auth()->user();
+        $captain = false;
+        $team = Team::find($user->team_id);
+        if($team){
+            if($team->user_id == $user->id) {
+                $captain = true;
+            }else{
+                $captain = false;
+            }
+        }
+        
         return response()->json([
             'access_token' => $token,
             'user_id' => $user->id,
-            'username' => $user->name
+            'username' => $user->name,
+            'captain' => $captain,
         ]);
     }
 }
