@@ -37,7 +37,7 @@ Route::group([
     Route::post('/', [TeamController::class, 'store']);
     Route::post('/update', [TeamController::class, 'update']);
     Route::post('/remove', [TeamController::class, 'removeTeam']);
-    Route::get('/{id}', [TeamController::class, 'getTeam']);
+    
     //Route::get('/user/{id}', [TeamController::class, 'getTeamUser']);
     // Player
     Route::delete('/player/{id}', [TeamController::class, 'removePlayer']);
@@ -51,4 +51,6 @@ Route::group([
     Route::post('/invite/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
     Route::post('/invite/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
 });
+
 Route::get('teams', [TeamController::class, 'index']);
+Route::get('team/{id}', [TeamController::class, 'getTeam']);
