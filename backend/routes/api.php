@@ -42,14 +42,19 @@ Route::group([
     // Player
     Route::delete('/player/{id}', [TeamController::class, 'removePlayer']);
     Route::get('/player/add/{id}', [TeamController::class, 'addPlayer']);
+});
 
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'invite'
+], function($router){ 
     //Invite
-    Route::post('/invite/player', [InviteTeamController::class, 'invitePlayer']);
-    Route::post('/invite/team', [InviteTeamController::class, 'inviteTeam']);
-    Route::post('/invite/player/accept', [InviteTeamController::class, 'acceptInvitePlayer']);
-    Route::post('/invite/player/decline', [InviteTeamController::class, 'declineInvitePlayer']);
-    Route::post('/invite/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
-    Route::post('/invite/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
+    Route::post('/player', [InviteTeamController::class, 'invitePlayer']);
+    Route::post('/team', [InviteTeamController::class, 'inviteTeam']);
+    Route::post('/player/accept', [InviteTeamController::class, 'acceptInvitePlayer']);
+    Route::post('/player/decline', [InviteTeamController::class, 'declineInvitePlayer']);
+    Route::post('/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
+    Route::post('/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
 });
 
 Route::get('teams', [TeamController::class, 'index']);
