@@ -61,9 +61,9 @@ class TeamController extends Controller
         
     }
 
-    public function getTeamUser($id){
+    public function getTeamUser(){
 
-        $user = User::find($id);
+        $user = auth()->user();
         if(Team::find($user->team_id)){ 
 
             $players = Team::find($user->team_id)->players;
