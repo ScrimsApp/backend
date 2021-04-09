@@ -123,6 +123,7 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'username' => $user->name,
             'captain' => $captain,
+            'team_id' => $team->id,
         ]);
     }
 }
