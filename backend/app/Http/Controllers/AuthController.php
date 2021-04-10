@@ -31,7 +31,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(["message" => "Invalid data"], 422);
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
@@ -54,7 +54,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            return response()->json(["message" => "Error registering"], 400);
         }
 
         $user = User::create(array_merge(
