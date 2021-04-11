@@ -21,6 +21,9 @@ class InviteTeamController extends Controller
         
         
         if($this->verifyCaptain()){
+
+            $team = Team::find($user_logado->team_id);
+            
             $invite = InviteTeam::create([
                 "type" => $request->type,
                 "status" => 1,
@@ -91,15 +94,17 @@ class InviteTeamController extends Controller
         $user_logado = auth()->user();
         if($this->verifyCaptain()){
             $team = Team::find($user_logado->team_id);
-            $invite = InviteTeam::find($request->invite_id);
-            
             $user = User::find($request->user_id);
-            $user->team_id = $team->id;
-            $user->save();
-            $invite->status = 2;
-            $invite->save();
-
-            return response()->json(['message' => "Invite accepted with successfully!"]);
+            $invite = InviteTeam::find($request->invite_id);
+            if($invite->user_id == $user->id && $invite->team_id == $team->id){
+                $user->team_id = $team->id;
+                $user->update();
+                $invite->status = 2;
+                $invite->update();
+                return response()->json(['message' => "Invite accepted with successfully!"]);
+            }else{
+                return response()->json(['message' => "Invite not accepted!"]);
+            }  
         }else{
             return response()->json(['message' => "You need to be the captain to accept a player's invitation!"]);
         }

@@ -16,7 +16,12 @@ class InviteTeam extends Model
     public function team(){
         return $this->belongsTo(Team::class);
     }
-    public function player(){
+    public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function verifyInvite($team_id, $user_id){
+
+        $invites = InviteTeam::all();
     }
 }

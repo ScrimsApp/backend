@@ -20,4 +20,63 @@ class Team extends Model
     public function invites() {
         return $this->hasMany(InviteTeam::class);
     }
+
+    public function getInvitesAtivos($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $invitado = InviteTeam::find($invite->id);
+            $objInvite = [
+                "id" => $invitado->id,
+                'type' => $invitado->type,
+                'status' => $invite->status,
+                'team' => $invitado->team,
+                'player' => $invitado->player
+            ];
+            if($invitado->status === 1){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
+    }
+
+    public function getInvitesAceitos($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $invitado = InviteTeam::find($invite->id);
+            $objInvite = [
+                "id" => $invitado->id,
+                'type' => $invitado->type,
+                'status' => $invite->status,
+                'team' => $invitado->team,
+                'player' => $invitado->player
+            ];
+            if($invitado->status === 2){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
+    }
+    public function getInvitesRecusados($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $invitado = InviteTeam::find($invite->id);
+            $objInvite = [
+                "id" => $invitado->id,
+                'type' => $invitado->type,
+                'status' => $invite->status,
+                'team' => $invitado->team,
+                'player' => $invitado->player
+            ];
+            if($invitado->status === 3){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
+    }
 }

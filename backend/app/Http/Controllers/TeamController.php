@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Team;
+use App\Models\InviteTeam;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -69,11 +70,10 @@ class TeamController extends Controller
 
             $players = Team::find($user->team_id)->players;
             $invites = Team::find($user->team_id)->invites;
+            
             $team = Team::find($user->team_id);
             $team['players'] = $players;
-            $team['invites'] = $invites;
-            //$invites = $team->invites;
-            //$team['invites'] = $invites;
+            $team['invites'] = $team->getInvitesAtivos($invites);
             return response()->json($team);
         }else{
             return response()->json(['message' => 'Team does not exist!']);
@@ -89,6 +89,7 @@ class TeamController extends Controller
                 $dados_atualizados = $request->all();
                 $team->name = $dados_atualizados['name'];
                 $team->tag = $dados_atualizados['tag'];
+                $team->description = $dados_atualizados['description'];
                 if($request->image){
                     //apaga imagem anterior
                     Storage::disk('public')->delete($team->image);
