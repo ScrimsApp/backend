@@ -21,22 +21,23 @@ class TeamController extends Controller
     }
 
     public function store(Request $request){ 
-        $image = $request->image->store("teams");
-        $team = $request->all();
+        $image = $request->image->store('teams', 'public');
+        $data = $request->all();
         if(auth()->user()->team_id != null){ return response()->json(['message' => "It was not possible to create the team, you have or are already in a team!"]); }
-        $newTeam = Team::create([
-            'name' => $team['name'],
-            'tag' => $team['tag'],
+        $team = Team::create([
+            'name' => $data['name'],
+            'tag' => $data['tag'],
+            'description' => $data['description'],
             'user_id' => auth()->user()->id,
         ]);
         if($request->image){
             
-            $newTeam->image = $image;
+            $team->image = $image;
         }
         
-        if($newTeam->save()) {
+        if($team->save()) {
             $user = auth()->user();
-            $user->team_id = $newTeam->id;
+            $user->team_id = $team->id;
             $user->update();
             $return = ['message' => "Team successfully registered!"];
         }else{ 
@@ -90,10 +91,10 @@ class TeamController extends Controller
                 $team->tag = $dados_atualizados['tag'];
                 if($request->image){
                     //apaga imagem anterior
-                    Storage::delete($team->image);
+                    Storage::disk('public')->delete($team->image);
         
                     //cria a imagem;
-                    $imagem = $request->image->store('teams');
+                    $imagem = $request->image->store('teams', 'public');
         
                     //atualiza o endereço da imagem no banco
                     $team->image = $imagem;
@@ -133,6 +134,7 @@ class TeamController extends Controller
             if(count($players) > 1){
                 return response()->json(['message' => 'Expel all players before deleting the team!']);
             }else{
+                Storage::disk('public')->delete($team->image);
                 if($team->delete()){
                     $auth_user = auth()->user();
                     $auth_user->team_id = null;

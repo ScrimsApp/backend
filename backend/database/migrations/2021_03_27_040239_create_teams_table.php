@@ -17,7 +17,7 @@ class CreateTeamsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('tag', 4);
-            $table->text('description');
+            $table->string('description')->nullable();
             $table->text('image')->nullable();
             $table->foreignId('user_id')->index();
             $table->timestamps();
