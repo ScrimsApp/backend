@@ -16,7 +16,6 @@ class TeamController extends Controller
         $teams = Team::all();
         for($i = 0; $i < count($teams); $i++){
             $teams[$i]->players; 
-            $teams[$i]->invites;
         }
         return $teams;
     }
