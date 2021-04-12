@@ -40,7 +40,7 @@ class TeamController extends Controller
             $user = auth()->user();
             $user->team_id = $team->id;
             $user->update();
-            $return = ['message' => "Team successfully registered!"];
+            $return = ['message' => "Team successfully registered!", 'team_id' => $team->id];
         }else{ 
             $return = ['message' => 'Error when registering the team!'];
         }
@@ -52,10 +52,8 @@ class TeamController extends Controller
         if(Team::find($id)){ 
 
             $players = Team::find($id)->players;
-            $invites = Team::find($id)->invites;
             $team = Team::find($id);
             $team['players'] = $players;
-            $team['invites'] = $invites;
             return response()->json($team);
         }else{
             return response()->json(['message' => 'Team does not exist!']);

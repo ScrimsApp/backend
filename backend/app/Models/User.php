@@ -70,4 +70,24 @@ class User extends Authenticatable implements JWTSubject
     public function invites() {
         return $this->hasMany(InviteTeam::class);
     }
+
+    public function getInvitesAtivos($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $invitado = InviteTeam::find($invite->id);
+            $objInvite = [
+                "id" => $invitado->id,
+                'type' => $invitado->type,
+                'status' => $invite->status,
+                'team' => $invitado->team,
+                'player' => $invitado->user
+            ];
+            if($invitado->status === 1 && $invitado->type == "player"){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
+    }
 }

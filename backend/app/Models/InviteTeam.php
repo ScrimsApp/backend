@@ -20,8 +20,4 @@ class InviteTeam extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function verifyInvite($team_id, $user_id){
-
-        $invites = InviteTeam::all();
-    }
 }

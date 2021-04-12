@@ -23,17 +23,20 @@ class InviteTeamController extends Controller
         if($this->verifyCaptain()){
 
             $team = Team::find($user_logado->team_id);
-            
-            $invite = InviteTeam::create([
-                "type" => $request->type,
-                "status" => 1,
-                "team_id" => $user_logado->team_id,
-                "user_id" => $request->user_id
-            ]);
-            if($invite->save()) {
-                $return = ['message' => "Successfully invited player!"];
-            }else{ 
-                $return = ['message' => 'Error inviting the player to the team!'];
+            if($this->verifyInviteExist($team->id, $request->user_id, $request->type)){
+                $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this player!"];
+            }else{
+                $invite = InviteTeam::create([
+                    "type" => $request->type,
+                    "status" => 1,
+                    "team_id" => $user_logado->team_id,
+                    "user_id" => $request->user_id
+                ]);
+                if($invite->save()) {
+                    $return = ['message' => "Successfully invited player!"];
+                }else{ 
+                    $return = ['message' => 'Error inviting the player to the team!'];
+                }
             }
             return response()->json($return);
         }else{
@@ -46,18 +49,22 @@ class InviteTeamController extends Controller
         $user_logado = auth()->user();
 
         if($user_logado->team_id != null){ return response()->json(['message' => "You cannot join another team, if you are already in one!"]); }
-
-        $invite = InviteTeam::create([
-            "type" => $request->type,
-            "status" => 1,
-            "team_id" => $request->team_id,
-            "user_id" => $user_logado->id
-        ]);
-        if($invite->save()) {
-            $return = ['message' => "Success in sending team invitations!"];
-        }else{ 
-            $return = ['message' => 'Error sending team invitation!'];
+        if($this->verifyInviteExist($request->team_id, $user_logado->id, $request->type)){
+            $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this team!"];
+        }else{
+            $invite = InviteTeam::create([
+                "type" => $request->type,
+                "status" => 1,
+                "team_id" => $request->team_id,
+                "user_id" => $user_logado->id
+            ]);
+            if($invite->save()) {
+                $return = ['message' => "Success in sending team invitations!"];
+            }else{ 
+                $return = ['message' => 'Error sending team invitation!'];
+            }
         }
+        
         return response()->json($return);
     }
 
@@ -65,16 +72,20 @@ class InviteTeamController extends Controller
         
         $user_logado = auth()->user();
         $invite = InviteTeam::find($request->invite_id);
-        $team = Team::find($request->team_id);
-        $invite->status = 2;
-        
-        $user_logado->team_id = $team->id;
-        if($user_logado->save()) {
-            $invite->save();
-            $return = ['message' => "Invitation successfully accepted!"];
-        }else{ 
-            $return = ['message' => 'Error accepting invitation!'];
+
+        if($invite->user_id == $user_logado->id){
+            $team = Team::find($request->team_id);
+            $invite->status = 2;
+            
+            $user_logado->team_id = $team->id;
+            if($user_logado->save()) {
+                $invite->save();
+                $return = ['message' => "Invitation successfully accepted!"];
+            }else{ 
+                $return = ['message' => 'Error accepting invitation!'];
+            }
         }
+        
         return response()->json($return);
         
     }
@@ -136,5 +147,20 @@ class InviteTeamController extends Controller
                 return false;
             }
         }
+    }
+
+    public function verifyInviteExist($team_id, $user_id, $type){
+
+        $invites = InviteTeam::all();
+
+        foreach ($invites as $invite) {
+
+            if($invite->type == $type) {
+
+                if($invite->team_id == $team_id && $invite->user_id == $user_id) { return true;}
+
+            }
+        }
+        return false;
     }
 }

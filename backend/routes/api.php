@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\InviteTeamController;
 
 /*
@@ -44,6 +45,13 @@ Route::group([
     Route::get('/player/add/{id}', [TeamController::class, 'addPlayer']);
 });
 
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'player'
+], function($router){ 
+    Route::get('/', [PlayerController::class, 'getPlayer']);
+
+});
 Route::group([
     'middleware' => 'api',
     'prefix' => 'invite'
