@@ -33,7 +33,7 @@ class Team extends Model
                 'team' => $invitado->team,
                 'player' => $invitado->user
             ];
-            if($invitado->status === 1 && $invitado->type == "team"){
+            if($invitado->status === 1 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
             }
         }
@@ -53,7 +53,7 @@ class Team extends Model
                 'team' => $invitado->team,
                 'player' => $invitado->user
             ];
-            if($invitado->status === 2 && $invitado->type == "team"){
+            if($invitado->status === 2 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
             }
         }
@@ -72,7 +72,7 @@ class Team extends Model
                 'team' => $invitado->team,
                 'player' => $invitado->user
             ];
-            if($invitado->status === 3 && $invitado->type == "team"){
+            if($invitado->status === 3 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
             }
         }
