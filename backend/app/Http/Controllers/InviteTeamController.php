@@ -94,7 +94,7 @@ class InviteTeamController extends Controller
         
         $user_logado = auth()->user();
         $invite = InviteTeam::find($request->invite_id);
-        $invite->status = 2;
+        $invite->status = 3;
         $invite->save();
         $return = ['message' => "Invite declined with successfully!"];
         return response()->json($return);
@@ -108,7 +108,7 @@ class InviteTeamController extends Controller
             $user = User::find($request->user_id);
             $invite = InviteTeam::find($request->invite_id);
             $user->team_id = $team->id;
-            $user->update();
+            $user->save();
             $invite->status = 2;
             if($invite->update()){
                 return response()->json(['message' => "Invite accepted with successfully!"]);
