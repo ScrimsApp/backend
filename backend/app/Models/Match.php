@@ -9,7 +9,7 @@ class Match extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['team_1', 'team_2', 'status', 'format', 'date'];
+    protected $fillable = ['team_1', 'team_2', 'status', 'format', 'date', 'time'];
 
     protected $table = 'matches';
 

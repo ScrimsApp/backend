@@ -7,7 +7,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\InviteTeamController;
 use App\Http\Controllers\MatchesController;
-
+use App\Http\Controllers\InviteMatchesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -64,6 +64,10 @@ Route::group([
     Route::post('/player/decline', [InviteTeamController::class, 'declineInvitePlayer']);
     Route::post('/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
     Route::post('/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
+
+    Route::post('/match' , [InviteMatches::class, 'createInvite']);
+    Route::post('/match/accept' , [InviteMatches::class, 'acceptInvite']);
+    Route::post('/match/decline' , [InviteMatches::class, 'declineInvite']);
 });
 
 Route::group([

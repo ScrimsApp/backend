@@ -18,8 +18,8 @@ class MatchesController extends Controller
                 "team_1" => $user->team_id,
                 "status" => 1,
                 "format" => $dados['format'],
-                "date" => $this->format_data($dados['date']),
-                "time" => $dados['time'],
+                "date" => $dados['date'],
+                "time" => $dados['time']
             ]);
             if($match->save()) {
                 $return = ['message' => "Match created successfully!"];
@@ -39,7 +39,6 @@ class MatchesController extends Controller
         for($i = 0; $i < count($matches); $i++){
             $matches[$i]['team_1'] = Team::find($matches[$i]['team_1']);
             $matches[$i]['team_2'] = Team::find($matches[$i]['team_2']);
-            $matches[$i]['date'] = $matches[$i]['date'];
         }
         return $matches;
     }
