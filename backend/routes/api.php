@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\InviteTeamController;
+use App\Http\Controllers\MatchesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,16 @@ Route::group([
     Route::post('/player/decline', [InviteTeamController::class, 'declineInvitePlayer']);
     Route::post('/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
     Route::post('/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
+});
+
+Route::group([
+   'middleware' => 'api',
+   'prefix' => 'match' 
+], function ($router){
+
+    Route::post('/', [MatchesController::class, 'store']);
+    Route::get('/', [MatchesController::class, 'index']);
+    Route::get('/{id}', [MatchesController::class, 'getMatch']);
 });
 
 Route::get('teams', [TeamController::class, 'index']);

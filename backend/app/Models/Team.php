@@ -21,6 +21,10 @@ class Team extends Model
         return $this->hasMany(InviteTeam::class);
     }
 
+    public function matches() {
+        return $this->hasMany(Match::class);
+    }
+
     public function getInvitesAtivos($invites){
 
         $arr_invites = array();
