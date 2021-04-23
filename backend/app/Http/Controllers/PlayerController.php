@@ -17,4 +17,11 @@ class PlayerController extends Controller
 
         return $user;
     }
+
+    public function getPlayers(){
+
+        $users = User::all();
+
+        return $users;
+    }
 }

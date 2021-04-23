@@ -82,3 +82,4 @@ Route::group([
 
 Route::get('teams', [TeamController::class, 'index']);
 Route::get('team/{id}', [TeamController::class, 'getTeam']);
+Route::get('players', [PlayerController::class, 'getPlayers']);
