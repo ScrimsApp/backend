@@ -65,9 +65,9 @@ Route::group([
     Route::post('/team/accept', [InviteTeamController::class, 'acceptInviteTeam']);
     Route::post('/team/decline', [InviteTeamController::class, 'declineInviteTeam']);
 
-    Route::post('/match' , [InviteMatches::class, 'createInvite']);
-    Route::post('/match/accept' , [InviteMatches::class, 'acceptInvite']);
-    Route::post('/match/decline' , [InviteMatches::class, 'declineInvite']);
+    Route::post('/match' , [InviteMatchesController::class, 'createInvite']);
+    Route::post('/match/accept' , [InviteMatchesController::class, 'acceptInvite']);
+    Route::post('/match/decline' , [InviteMatchesController::class, 'declineInvite']);
 });
 
 Route::group([

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Match;
+use App\Models\Team;
+use App\Models\InviteMatches;
 
 class InviteMatchesController extends Controller
 {
@@ -27,7 +30,7 @@ class InviteMatchesController extends Controller
         }else{
            return response()->json(['message' => "You need to be the captain to creating match inviting!"]);
         }
-        
+        return response()->json($return);
     }
 
     public function acceptInvite(Request $request){
@@ -42,7 +45,7 @@ class InviteMatchesController extends Controller
             $match = Match::find($inviteMatch->match_id);
             $match->team_2 = $inviteMatch->team_2;
             $match->status = 2;
-            if($inviteMatch->save()) {
+            if($match->save()) {
                 $inviteMatch->update();
                 return response()->json(['message' => "Invite accepted with successfully!"]);
             }else{
@@ -59,9 +62,11 @@ class InviteMatchesController extends Controller
         if($this->verifyCaptain()){
             $invite = InviteMatches::find($request->invite_id);
             $invite->status = 3;
-            $invite->save();
-
-            return response()->json(['message' => "Invite declined with successfully!"]);
+            if($invite->save()) {
+                return response()->json(['message' => "Invite declined with successfully!"]);
+            }else{
+                return response()->json(['message' => "Invite not declined!"]);
+            }
         }else{
             return response()->json(['message' => "You need to be the captain to decline a matches invitation!"]);
         }

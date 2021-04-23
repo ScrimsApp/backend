@@ -20,4 +20,8 @@ class Match extends Model
     public function oponnent(){
         return $this->belongsTo(Team::class, 'foreign_key', 'team_2');
     }
+
+    public function inviteMatches(){
+        return $this->hasMany(InviteMatches::class);
+    }
 }
