@@ -71,6 +71,7 @@ class TeamController extends Controller
             $team = Team::find($user->team_id);
             $team['players'] = $players;
             $team['invites'] = $team->getInvitesAtivos($invites);
+            $team['matches'] = $team->matches;
             return response()->json($team);
         }else{
             return response()->json(['message' => 'Team does not exist!']);
