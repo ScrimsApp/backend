@@ -154,7 +154,7 @@ class Team extends Model
                 'team_2' => Team::find($match->team_2),
                 'status' => $match->status,
                 'format' => $match->format,
-                'data' => $match->data,
+                'data' => $match->date,
                 'time' => $match->time,
                 'created_at' => $match->created_at,
                 'updated_at' => $match->updated_at
@@ -176,7 +176,7 @@ class Team extends Model
                 'team_2' => Team::find($match->team_2),
                 'status' => $match->status,
                 'format' => $match->format,
-                'data' => $match->data,
+                'data' => $match->date,
                 'time' => $match->time,
                 'created_at' => $match->created_at,
                 'updated_at' => $match->updated_at

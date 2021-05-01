@@ -77,7 +77,7 @@ class TeamController extends Controller
             $team['matches_created'] = $team->getMatchesCreated($matches);
             $team['matches_accepted'] = $team->getMatchesAccepted($matches);
             $array = $team->getMatchesAccepted($matches_visitors);
-            $team['matches_accepted'] += $array; 
+            $team['matches_accepted'] = array_merge($team['matches_accepted'], $array); 
             $team['invites_matches_sends'] = $team->getInvitesMatchesEnviados($invites_matches);
             $team['invites_matches_receives'] = $team->getInvitesMatchesRecebidos($matches);
             return response()->json($team);
