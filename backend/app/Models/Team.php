@@ -25,6 +25,10 @@ class Team extends Model
         return $this->hasMany(Match::class, 'team_1');
     }
 
+    public function matches_visitors(){
+        return $this->hasMany(Match::class, 'team_2');
+    }
+
     public function invite_matches(){
         return $this->hasMany(InviteMatches::class, 'team_2');
     }
@@ -86,5 +90,100 @@ class Team extends Model
         }
 
         return $arr_invites;
+    }
+
+    public function getInvitesMatchesRecebidos($matches){
+        
+        $arr_invites = array();
+        foreach($matches as $match){
+            if($match->status !== 1){ continue; }
+            $invites = $match->inviteMatches;
+            foreach($invites as $invite){
+                $team = Team::find($invite->team_2);
+                $team_1 = Team::find($match->team_1);
+                $match['team_1'] = $team_1;
+                $objInvite = [
+                    "id" => $invite->id,
+                    "match" => $match,
+                    'team' => $team,
+                    'status' => $invite->status,
+                    'created_at' => $invite->created_at,
+                    'updated_at' => $invite->updated_at
+                ];
+                if($invite->status === 1){
+                    $arr_invites[] = $objInvite;
+                }
+            }  
+        }
+        return $arr_invites;
+    }
+
+    public function getInvitesMatchesEnviados($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $match = Match::find($invite->match_id);
+            if($match->status !== 1){ continue; }
+            $team = Team::find($match->team_1);
+            $match['team_1'] = $team;
+            $objInvite = [
+                'id' => $invite->id,
+                'match' => $match,
+                'team_2' => $invite->team_2,
+                'status' => $invite->status,
+                'created_at' => $invite->created_at,
+                'updated_at' => $invite->updated_at
+            ];
+            if($invite->status === 1){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
+    }
+
+    public function getMatchesAccepted($matches){
+
+        $arr_matches = array();
+        foreach($matches as $match){
+            if($match->status !== 2){ continue; }
+            
+            $objMatch = [
+                'id' => $match->id,
+                'team_1' => Team::find($match->team_1),
+                'team_2' => Team::find($match->team_2),
+                'status' => $match->status,
+                'format' => $match->format,
+                'data' => $match->data,
+                'time' => $match->time,
+                'created_at' => $match->created_at,
+                'updated_at' => $match->updated_at
+            ];
+            $arr_matches[] = $objMatch;
+        }
+
+        return $arr_matches;
+    }
+    public function getMatchesCreated($matches){
+
+        $arr_matches = array();
+        foreach($matches as $match){
+            if($match->status !== 1){ continue; }
+            
+            $objMatch = [
+                'id' => $match->id,
+                'team_1' => Team::find($match->team_1),
+                'team_2' => Team::find($match->team_2),
+                'status' => $match->status,
+                'format' => $match->format,
+                'data' => $match->data,
+                'time' => $match->time,
+                'created_at' => $match->created_at,
+                'updated_at' => $match->updated_at
+            ];
+            $arr_matches[] = $objMatch;
+        }
+
+        return $arr_matches;
     }
 }
