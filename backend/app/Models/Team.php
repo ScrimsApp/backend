@@ -142,12 +142,17 @@ class Team extends Model
         return $arr_invites;
     }
 
-    public function getMatchesAccepted($matches){
+    public function getMatchesAccepted($matches, $type = null){
 
+        
         $arr_matches = array();
         foreach($matches as $match){
             if($match->status !== 2){ continue; }
-            
+            if($type === "visitors"){
+                $team = Team::find($match->team_1);
+            }else{
+                $team = Team::find($match->team_2);
+            }
             $objMatch = [
                 'id' => $match->id,
                 'team_1' => Team::find($match->team_1),
@@ -156,6 +161,7 @@ class Team extends Model
                 'format' => $match->format,
                 'data' => $match->date,
                 'time' => $match->time,
+                'team_adversary_image' => $team->image,
                 'created_at' => $match->created_at,
                 'updated_at' => $match->updated_at
             ];
