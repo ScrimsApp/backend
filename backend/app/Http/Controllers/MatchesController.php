@@ -33,6 +33,28 @@ class MatchesController extends Controller
         return response()->json($return);
     }
 
+    public function delete(Request $request) {
+        
+        $match = Match::find($request->match_id);
+        $user = auth()->user();
+        
+        if($user->team_id !== $match->team_1 && $user->team_id !== $match->team_2){ return response()->json(['message' => "This match could not be deleted because it is not part of your team!"]);}
+        if($this->verifyCaptain()){
+            
+            
+            $match->status = 3;
+            if($match->save()) {
+                $return = ['message' => "Match deleted with successfully!"];
+            }else{ 
+                $return = ['message' => 'Error deleting match!'];
+            }
+        }else{
+            return response()->json(['message' => "You need to be the captain to deleting match!"]);
+        }
+
+        return response()->json($return);
+    }
+
     public function index(){
 
         $matches = Match::all();
