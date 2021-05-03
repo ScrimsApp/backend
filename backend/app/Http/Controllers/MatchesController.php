@@ -36,6 +36,7 @@ class MatchesController extends Controller
     public function delete(Request $request) {
         
         $match = Match::find($request->match_id);
+        if(empty($match)){ return response()->json(['message' => "Match does not exist!"]); }
         $user = auth()->user();
         
         if($user->team_id !== $match->team_1 && $user->team_id !== $match->team_2){ return response()->json(['message' => "This match could not be deleted because it is not part of your team!"]);}
