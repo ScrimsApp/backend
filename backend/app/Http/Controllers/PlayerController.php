@@ -20,7 +20,7 @@ class PlayerController extends Controller
 
     public function getPlayers(){
 
-        $users = User::all();
+        $users = User::paginate(8);
 
         return $users;
     }

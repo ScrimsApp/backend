@@ -9,7 +9,7 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'tag', 'image', 'user_id'];
+    protected $fillable = ['name', 'tag', 'description', 'image', 'user_id'];
 
     protected $table = 'teams';
 
@@ -162,6 +162,7 @@ class Team extends Model
                 'data' => $match->date,
                 'time' => $match->time,
                 'team_adversary_image' => $team->image,
+                'team_adversary_name' => $team->name,
                 'created_at' => $match->created_at,
                 'updated_at' => $match->updated_at
             ];

@@ -59,9 +59,10 @@ class AuthController extends Controller
 
         $user = User::create(array_merge(
                     $validator->validated(),
-                    ['password' => bcrypt($request->password)]
+                    ['password' => bcrypt($request->password),
+                     'image' => $request->name."?backgroundColor=%234767f9&height=150&width=150"]
                 ));
-
+                // https://avatars.dicebear.com/api/micah/vinicius.svg?backgroundColor=%234767f9&height=250&width=250
         return response()->json([
             'message' => 'User successfully registered',
             'user_id' => $user->id,

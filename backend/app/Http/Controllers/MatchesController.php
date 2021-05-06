@@ -59,11 +59,14 @@ class MatchesController extends Controller
     public function index(){
 
         $matches = Match::all();
-        for($i = 0; $i < count($matches); $i++){
-            $matches[$i]['team_1'] = Team::find($matches[$i]['team_1']);
-            $matches[$i]['team_2'] = Team::find($matches[$i]['team_2']);
-        }
-        return $matches;
+
+        $array_matches = $this->getMatchesCreated($matches);
+        // for($i = 0; $i < count($array); $i++){
+        //     $matches['data'][$i]['team_1'] = Team::find($matches['data'][$i]['team_1']);
+        //     $matches['data'][$i]['team_2'] = Team::find($matches['data'][$i]['team_2']);
+        // }
+        // $matches_pagination = $matches->paginate(8);
+        return response()->json($matches, 200);
     }
 
     public function getMatch($id){
@@ -82,6 +85,28 @@ class MatchesController extends Controller
 
 
         return response()->json($match);
+    }
+
+    private function getMatchesCreated($matches){
+
+        $arr_matches = array();
+        foreach($matches as $match){
+            if($match->status !== 1){ continue; }
+            
+            $objMatch = [
+                'id' => $match->id,
+                'team_1' => Team::find($match->team_1),
+                'status' => $match->status,
+                'format' => $match->format,
+                'data' => $match->date,
+                'time' => $match->time,
+                'created_at' => $match->created_at,
+                'updated_at' => $match->updated_at
+            ];
+            $arr_matches[] = $objMatch;
+        }
+
+        return $arr_matches;
     }
 
     private function format_date_db($date){
