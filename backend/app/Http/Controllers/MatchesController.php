@@ -66,7 +66,7 @@ class MatchesController extends Controller
         //     $matches['data'][$i]['team_2'] = Team::find($matches['data'][$i]['team_2']);
         // }
         // $matches_pagination = $matches->paginate(8);
-        return response()->json($matches, 200);
+        return response()->json($array_matches, 200);
     }
 
     public function getMatch($id){
