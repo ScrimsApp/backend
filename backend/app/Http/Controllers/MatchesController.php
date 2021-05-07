@@ -98,7 +98,7 @@ class MatchesController extends Controller
                 'team_1' => Team::find($match->team_1),
                 'status' => $match->status,
                 'format' => $match->format,
-                'data' => $match->date,
+                'date' => $match->date,
                 'time' => $match->time,
                 'created_at' => $match->created_at,
                 'updated_at' => $match->updated_at
