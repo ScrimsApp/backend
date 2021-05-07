@@ -13,10 +13,8 @@ class TeamController extends Controller
     
     public function index(){
 
-        $teams = Team::all();
-        for($i = 0; $i < count($teams); $i++){
-            $teams[$i]->players; 
-        }
+        $teams = Team::paginate(8);;
+        
         return $teams;
     }
 
