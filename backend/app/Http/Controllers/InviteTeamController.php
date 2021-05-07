@@ -24,7 +24,7 @@ class InviteTeamController extends Controller
 
             $team = Team::find($user_logado->team_id);
             if($this->verifyInviteExist($team->id, $request->user_id, $request->type)){
-                $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this player!"];
+                $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this player!", 406];
             }else{
                 $invite = InviteTeam::create([
                     "type" => $request->type,
@@ -50,7 +50,7 @@ class InviteTeamController extends Controller
 
         if($user_logado->team_id != null){ return response()->json(['message' => "You cannot join another team, if you are already in one!"]); }
         if($this->verifyInviteExist($request->team_id, $user_logado->id, $request->type)){
-            $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this team!"];
+            $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this team!", 406];
         }else{
             $invite = InviteTeam::create([
                 "type" => $request->type,
