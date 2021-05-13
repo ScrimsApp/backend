@@ -14,20 +14,26 @@ class MatchesController extends Controller
         $dados = $request->all();
         $user = auth()->user();
         if($this->verifyCaptain()){
-            $match = Match::create([
-                "team_1" => $user->team_id,
-                "status" => 1,
-                "format" => $dados['format'],
-                "date" => $dados['date'],
-                "time" => $dados['time']
-            ]);
-            if($match->save()) {
-                $return = ['message' => "Match created successfully!"];
-            }else{ 
-                $return = ['message' => 'Error creating match!'];
+
+            if($dados['date'] >= date('Y-m-d')){
+                $match = Match::create([
+                    "team_1" => $user->team_id,
+                    "status" => 1,
+                    "format" => $dados['format'],
+                    "date" => $dados['date'],
+                    "time" => $dados['time']
+                ]);
+                if($match->save()) {
+                    $return = ['message' => "Match created successfully!"];
+                }else{ 
+                    $return = ['message' => 'Error creating match!'];
+                }
+            }else{
+                return response()->json(['message' => "It is not possible to schedule a match in the past"], 406);
             }
+            
         }else{
-            return response()->json(['message' => "You need to be the captain to creating match!"]);
+            return response()->json(['message' => "You need to be the captain to creating match!"], 403);
         }
 
         return response()->json($return);
@@ -50,7 +56,7 @@ class MatchesController extends Controller
                 $return = ['message' => 'Error deleting match!'];
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to deleting match!"]);
+            return response()->json(['message' => "You need to be the captain to deleting match!"], 403);
         }
 
         return response()->json($return);
@@ -58,15 +64,8 @@ class MatchesController extends Controller
 
     public function index(){
 
-        $matches = Match::all();
-
-        $array_matches = $this->getMatchesCreated($matches);
-        // for($i = 0; $i < count($array); $i++){
-        //     $matches['data'][$i]['team_1'] = Team::find($matches['data'][$i]['team_1']);
-        //     $matches['data'][$i]['team_2'] = Team::find($matches['data'][$i]['team_2']);
-        // }
-        // $matches_pagination = $matches->paginate(8);
-        return response()->json($array_matches, 200);
+        $matches = Match::select("*")->where("status", 1)->orderBy("id", "desc")->get();
+        return response()->json($matches, 200);
     }
 
     public function getMatch($id){

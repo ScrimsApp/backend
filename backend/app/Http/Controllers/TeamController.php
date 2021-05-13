@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Team;
 use App\Models\InviteTeam;
 use App\Models\User;
+use App\Models\Match;
 use Illuminate\Support\Facades\Storage;
 
 class TeamController extends Controller
@@ -13,7 +14,7 @@ class TeamController extends Controller
     
     public function index(){
         
-        $teams = Team::paginate(8);
+        $teams = Team::orderBy('id', 'desc')->paginate(8);
         
         return $teams;
     }
@@ -53,7 +54,7 @@ class TeamController extends Controller
             $team['players'] = $players;
             return response()->json($team);
         }else{
-            return response()->json(['message' => 'Team does not exist!']);
+            return response()->json(['message' => 'Team does not exist!'], 404);
         }
         
     }
@@ -64,9 +65,9 @@ class TeamController extends Controller
         if(Team::find($user->team_id)){ 
 
             $players = Team::find($user->team_id)->players;
-            $invites = Team::find($user->team_id)->invites;
+            $invites = InviteTeam::select("*")->where("team_id", $user->team_id)->orderBy("created_at", "desc")->get();
             $invites_matches = Team::find($user->team_id)->invite_matches;
-            $matches = Team::find($user->team_id)->matches;
+            $matches = Match::select("*")->where("team_1", $user->team_id)->orderBy("date", "asc")->get();
             $matches_visitors = Team::find($user->team_id)->matches_visitors;
 
             $team = Team::find($user->team_id);
@@ -80,7 +81,7 @@ class TeamController extends Controller
             $team['invites_matches_receives'] = $team->getInvitesMatchesRecebidos($matches);
             return response()->json($team);
         }else{
-            return response()->json(['message' => 'Team does not exist!']);
+            return response()->json(['message' => 'Team does not exist!'], 404);
         }
         
     }
@@ -108,10 +109,10 @@ class TeamController extends Controller
                 $return = $team->update() ? ['message' => "Team updated successfully!"] : ['message' => 'Error when updating the team!'];
                 return response()->json($return);
             }else{ 
-                return response()->json(['message' => 'Team does not exist!']);
+                return response()->json(['message' => 'Team does not exist!'], 404);
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to update team information!"]);
+            return response()->json(['message' => "You need to be the captain to update team information!"], 403);
         }
 
     }
@@ -119,7 +120,7 @@ class TeamController extends Controller
     public function removePlayer($id){
 
         if($this->verifyCaptain()){
-            if(auth()->user()->id == $id){ return response()->json(['message' => "You cannot expel yourself from your team"]); }
+            if(auth()->user()->id == $id){ return response()->json(['message' => "You cannot expel yourself from your team"], 406); }
             $user_kickado = User::find($id);
 
             $user_kickado->team_id = null;
@@ -127,7 +128,7 @@ class TeamController extends Controller
             $return = $user_kickado->save() ? ['message' => "Player successfully kicked out!"] : ['message' => 'Error kicking the player!'];
             return response()->json($return);
         }else{
-            return response()->json(['message' => "You need to be the captain to kicking the player!"]);
+            return response()->json(['message' => "You need to be the captain to kicking the player!"], 403);
         }       
     }
 
@@ -137,7 +138,7 @@ class TeamController extends Controller
             $team = Team::find(auth()->user()->team_id);
             $players = $team->players;
             if(count($players) > 1){
-                return response()->json(['message' => 'Expel all players before deleting the team!']);
+                return response()->json(['message' => 'Expel all players before deleting the team!'], 406);
             }else{
                 Storage::disk('public')->delete($team->image);
                 if($team->delete()){
@@ -151,7 +152,7 @@ class TeamController extends Controller
             return response()->json($return);
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to deleting the team!"]);
+            return response()->json(['message' => "You need to be the captain to deleting the team!"], 403);
         }   
     }
 
@@ -165,10 +166,10 @@ class TeamController extends Controller
                 $return = $user->save() ? ['message' => "Successfully recruited player!"] : ['message' => 'Error recruiting player!'];
                 return response()->json($return);
             }else{
-                return response()->json(['message' => "This player is already on another team!"]);
+                return response()->json(['message' => "This player is already on another team!"], 406);
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to recruit a player!"]);
+            return response()->json(['message' => "You need to be the captain to recruit a player!"], 403);
         }       
     }
 

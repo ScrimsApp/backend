@@ -28,7 +28,7 @@ class InviteMatchesController extends Controller
                $return = ['message' => 'Error creating match inviting!'];
            }
         }else{
-           return response()->json(['message' => "You need to be the captain to creating match inviting!"]);
+           return response()->json(['message' => "You need to be the captain to creating match inviting!"], 403);
         }
         return response()->json($return);
     }
@@ -52,7 +52,7 @@ class InviteMatchesController extends Controller
                 return response()->json(['message' => "Invite not accepted!"]);
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to creating match!"]);
+            return response()->json(['message' => "You need to be the captain to creating match!"], 403);
         }
     }
 
@@ -68,7 +68,7 @@ class InviteMatchesController extends Controller
                 return response()->json(['message' => "Invite not declined!"]);
             }
         }else{
-            return response()->json(['message' => "You need to be the captain to decline a matches invitation!"]);
+            return response()->json(['message' => "You need to be the captain to decline a matches invitation!"], 403);
         }
 
     }

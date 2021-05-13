@@ -24,7 +24,7 @@ class InviteTeamController extends Controller
 
             $team = Team::find($user_logado->team_id);
             if($this->verifyInviteExist($team->id, $request->user_id, $request->type)){
-                $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this player!", 406];
+                return response()->json(['message' => "It was not possible to send the invitation, you already have an existing one for this player!"], 406);
             }else{
                 $invite = InviteTeam::create([
                     "type" => $request->type,
@@ -40,7 +40,7 @@ class InviteTeamController extends Controller
             }
             return response()->json($return);
         }else{
-            return response()->json(['message' => "You need to be the captain to invite a player!"]);
+            return response()->json(['message' => "You need to be the captain to invite a player!"], 403);
         }
     }
 
@@ -48,9 +48,9 @@ class InviteTeamController extends Controller
 
         $user_logado = auth()->user();
 
-        if($user_logado->team_id != null){ return response()->json(['message' => "You cannot join another team, if you are already in one!"]); }
+        if($user_logado->team_id != null){ return response()->json(['message' => "You cannot join another team, if you are already in one!"], 406); }
         if($this->verifyInviteExist($request->team_id, $user_logado->id, $request->type)){
-            $return = ['message' => "It was not possible to send the invitation, you already have an existing one for this team!", 406];
+            return response()->json(['message' => "It was not possible to send the invitation, you already have an existing one for this team!"], 406);
         }else{
             $invite = InviteTeam::create([
                 "type" => $request->type,
@@ -117,7 +117,7 @@ class InviteTeamController extends Controller
                 return response()->json(['message' => "Invite not accepted!"]);
             }  
         }else{
-            return response()->json(['message' => "You need to be the captain to accept a player's invitation!"]);
+            return response()->json(['message' => "You need to be the captain to accept a player's invitation!"], 403);
         }
 
     }
@@ -132,7 +132,7 @@ class InviteTeamController extends Controller
 
             return response()->json(['message' => "Invite declined with successfully!"]);
         }else{
-            return response()->json(['message' => "You need to be the captain to decline a player's invitation!"]);
+            return response()->json(['message' => "You need to be the captain to decline a player's invitation!"], 403);
         }
 
     }
