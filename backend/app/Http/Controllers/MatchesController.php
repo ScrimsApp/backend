@@ -64,9 +64,13 @@ class MatchesController extends Controller
 
     public function index(){
 
-        $matches = Match::select("*")->where("status", 1)->orderBy("id", "desc")->get();
-        $array_matches = $this->getMatchesCreated($matches);
-        return response()->json($array_matches, 200);
+        $matches = Match::query()
+                          ->join('teams', 'teams.id', 'matches.team_1')
+                          ->where('status', 1)
+                          ->select('matches.*' , 'teams.*')
+                          ->paginate(9);
+
+        return response()->json($matches, 200);
     }
 
     public function getMatch($id){
