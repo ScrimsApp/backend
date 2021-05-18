@@ -17,6 +17,19 @@ class PlayerController extends Controller
 
         return $user;
     }
+    
+    public function getPlayerId($id){
+        $user = User::find($id);
+
+        $objUser = [
+            'name' => $user['name'],
+            'person_id' => $user['person_id'],
+            'team_id' => $user['team_id'],
+            'image' => $user['image']
+        ];
+        return $objUser;
+
+    }
 
     public function getPlayers(){
 
