@@ -14,6 +14,7 @@ class PlayerController extends Controller
         $user = auth()->user();
         $invites = $user->invites;
         $user['invites'] = $user->getInvitesAtivos($invites);
+        $user['team'] = $user->team;
 
         return $user;
     }
