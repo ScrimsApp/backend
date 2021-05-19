@@ -51,7 +51,7 @@ Route::group([
     'prefix' => 'player'
 ], function($router){ 
     Route::get('/', [PlayerController::class, 'getPlayer']);
-    Route::get('/update', [PlayerController::class, 'update']);
+    Route::post('/update', [PlayerController::class, 'update']);
 });
 Route::group([
     'middleware' => 'api',

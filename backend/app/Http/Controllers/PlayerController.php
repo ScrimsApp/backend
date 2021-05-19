@@ -62,7 +62,7 @@ class PlayerController extends Controller
             $imagem = $request->image->store('players', 'public');
 
             //atualiza o endereço da imagem no banco
-            $user->image = $imagem;
+            $user->image = "http://localhost:8000/storage/players/" . $imagem;
         }
         $user->save();
         return response()->json(['mensagem' => 'Usuário atualizado com sucesso!'], 200);
