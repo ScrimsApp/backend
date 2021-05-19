@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\InviteTeam;
+use Illuminate\Support\Facades\Storage;
 
 class PlayerController extends Controller
 {
