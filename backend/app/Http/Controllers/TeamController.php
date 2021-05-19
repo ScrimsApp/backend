@@ -104,7 +104,6 @@ class TeamController extends Controller
         
                     //atualiza o endereço da imagem no banco
                     $team->image = $imagem;
-                    $team->save();
                 }
                 $return = $team->update() ? ['message' => "Team updated successfully!"] : ['message' => 'Error when updating the team!'];
                 return response()->json($return);

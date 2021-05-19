@@ -38,4 +38,34 @@ class PlayerController extends Controller
 
         return $users;
     }
+
+    public function update(Request $request){
+
+        $dados = $request->all();
+        $user = auth()->user();
+
+        $user->name = $request->name;
+        
+        if($user->email != $request->email){
+            $user->email = $request->email;
+            $user->email_verified_at = null;
+        }
+        if($request->password){
+            $user->password = Hash::make($request->password);
+        }
+
+        if($request->image){
+            //apaga imagem anterior
+            Storage::disk('public')->delete($user->image);
+
+            //cria a imagem;
+            $imagem = $request->image->store('players', 'public');
+
+            //atualiza o endereço da imagem no banco
+            $user->image = $imagem;
+        }
+        $user->save();
+        return response()->json(['mensagem' => 'Usuário atualizado com sucesso!'], 200);
+
+    }
 }
