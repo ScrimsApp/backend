@@ -58,7 +58,7 @@ class AuthController extends Controller
         }
         $person_id = "#" . rand(1000, 9999);
        
-        $image = $request->name . ".svg?backgroundColor=%234767f9&height=150&width=150";
+        $image = "https://avatars.dicebear.com/api/micah/" . $request->name . ".svg?backgroundColor=%234767f9&height=150&width=150";
         $user = User::create(array_merge(
                     $validator->validated(),
                     ['password' => bcrypt($request->password),
