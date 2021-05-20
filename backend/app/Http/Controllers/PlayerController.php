@@ -25,9 +25,11 @@ class PlayerController extends Controller
 
         $objUser = [
             'name' => $user['name'],
+            'description' => $user['description'],
             'person_id' => $user['person_id'],
             'team_id' => $user['team_id'],
-            'image' => $user['image']
+            'image' => $user['image'],
+            'created_at' => $user['created_at'],
         ];
         return $objUser;
 
@@ -35,8 +37,11 @@ class PlayerController extends Controller
 
     public function getPlayers(){
 
-        $users = User::orderBy('id', 'desc')->paginate(8);
-
+        $users = User::query()
+                          ->select('users.id', 'users.name', 'users.image', 'users.created_at', 'users.person_id')
+                          ->orderBy('id', 'desc')
+                          ->paginate(8);
+                                                // users.description
         return $users;
     }
 

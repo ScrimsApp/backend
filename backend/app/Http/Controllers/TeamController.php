@@ -71,7 +71,7 @@ class TeamController extends Controller
             $matches_visitors = Team::find($user->team_id)->matches_visitors;
 
             $team = Team::find($user->team_id);
-            $team['players'] = $players;
+            $team['players'] = $team->playersAtivos($players);
             $team['invites_players'] = $team->getInvitesAtivos($invites);
             $team['matches_created'] = $team->getMatchesCreated($matches);
             $team['matches_accepted'] = $team->getMatchesAccepted($matches);

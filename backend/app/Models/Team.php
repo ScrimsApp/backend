@@ -33,17 +33,47 @@ class Team extends Model
         return $this->hasMany(InviteMatches::class, 'team_2');
     }
 
+    public function playersAtivos($players){
+
+        $arr_players = array();
+
+        foreach ($players as $player){
+
+            $objPlayer = [
+                "id" => $player->id,
+                'name' => $player->name,
+                'image' => $player->image,
+                'person_id' => $player->person_id,
+                'description' => $player->description,
+                'created_at' => $player->created_at,
+            ];
+            $arr_players[] = $objPlayer;
+        }
+
+        return $arr_players;
+
+    }
     public function getInvitesAtivos($invites){
 
         $arr_invites = array();
         foreach($invites as $invite){
             $invitado = InviteTeam::find($invite->id);
+
+            $player = $invitado->user;
+            $objPlayer = [
+                "id" => $player->id,
+                'name' => $player->name,
+                'image' => $player->image,
+                'person_id' => $player->person_id,
+                'description' => $player->description,
+                'created_at' => $player->created_at,
+            ];
             $objInvite = [
                 "id" => $invitado->id,
                 'type' => $invitado->type,
                 'status' => $invite->status,
                 'team' => $invitado->team,
-                'player' => $invitado->user
+                'player' => $objPlayer
             ];
             if($invitado->status === 1 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
@@ -58,12 +88,21 @@ class Team extends Model
         $arr_invites = array();
         foreach($invites as $invite){
             $invitado = InviteTeam::find($invite->id);
+            $player = $invitado->user;
+            $objPlayer = [
+                "id" => $player->id,
+                'name' => $player->name,
+                'image' => $player->image,
+                'person_id' => $player->person_id,
+                'description' => $player->description,
+                'created_at' => $player->created_at,
+            ];
             $objInvite = [
                 "id" => $invitado->id,
                 'type' => $invitado->type,
                 'status' => $invite->status,
                 'team' => $invitado->team,
-                'player' => $invitado->user
+                'player' => $objPlayer
             ];
             if($invitado->status === 2 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
@@ -77,12 +116,22 @@ class Team extends Model
         $arr_invites = array();
         foreach($invites as $invite){
             $invitado = InviteTeam::find($invite->id);
+
+            $player = $invitado->user;
+            $objPlayer = [
+                "id" => $player->id,
+                'name' => $player->name,
+                'image' => $player->image,
+                'person_id' => $player->person_id,
+                'description' => $player->description,
+                'created_at' => $player->created_at,
+            ];
             $objInvite = [
                 "id" => $invitado->id,
                 'type' => $invitado->type,
                 'status' => $invite->status,
                 'team' => $invitado->team,
-                'player' => $invitado->user
+                'player' => $objPlayer
             ];
             if($invitado->status === 3 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;

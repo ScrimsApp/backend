@@ -67,8 +67,8 @@ class MatchesController extends Controller
         $matches = Match::query()
                           ->join('teams', 'teams.id', 'matches.team_1')
                           ->where('status', 1)
-                          ->select('matches.*' , 'teams.*')
-                          ->paginate(9);
+                          ->select('matches.id as match_id' , 'matches.*' , 'teams.*')
+                          ->paginate(8);
 
         return response()->json($matches, 200);
     }

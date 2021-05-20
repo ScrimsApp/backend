@@ -25,8 +25,11 @@ class UserFactory extends Factory
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
+            'description' => $this->faker->text,
             'email_verified_at' => now(),
-            'password' => '45457013', // password
+            'image' => "https://avatars.dicebear.com/api/micah/" . $this->faker->name . ".svg?backgroundColor=%234767f9&height=150&width=150",
+            'person_id' => "#" . rand(1000, 9999),
+            'password' => bcrypt("45457013"), // password
             'remember_token' => Str::random(10),
         ];
     }
