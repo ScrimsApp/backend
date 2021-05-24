@@ -64,9 +64,11 @@ class MatchesController extends Controller
 
     public function index(){
 
+        $date = date('Y-m-d');
         $matches = Match::query()
                           ->join('teams', 'teams.id', 'matches.team_1')
                           ->where('status', 1)
+                          ->where('date' , '>', $date)
                           ->select('matches.id as match_id' , 'matches.*' , 'teams.*')
                           ->paginate(8);
 

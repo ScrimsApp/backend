@@ -47,31 +47,34 @@ class PlayerController extends Controller
 
     public function update(Request $request){
 
-        $dados = $request->all();
         $user = auth()->user();
-
-        $user->name = $request->name;
+        if($user){
+            $user->name = $request->name;
+            $user->description = $request->description;
+            if($user->email != $request->email){
+                $user->email = $request->email;
+                $user->email_verified_at = null;
+            }
+            if($request->password){
+                $user->password = Hash::make($request->password);
+            }
         
-        if($user->email != $request->email){
-            $user->email = $request->email;
-            $user->email_verified_at = null;
+            if($request->image){
+                //apaga imagem anterior
+                Storage::disk('public')->delete($user->image);
+            
+                //cria a imagem;
+                $imagem = $request->image->store('players', 'public');
+            
+                //atualiza o endereço da imagem no banco
+                $user->image = "http://localhost:8000/storage/" . $imagem;
+            }
+    
+            $return = $user->update() ? ['message' => "User updated successfully!"] : ['message' => 'Error when updating the user!'];
+            return response()->json($return);
+        }else{ 
+            return response()->json(['message' => 'User does not exist!'], 404);
         }
-        if($request->password){
-            $user->password = Hash::make($request->password);
-        }
-
-        if($request->image){
-            //apaga imagem anterior
-            Storage::disk('public')->delete($user->image);
-
-            //cria a imagem;
-            $imagem = $request->image->store('players', 'public');
-
-            //atualiza o endereço da imagem no banco
-            $user->image = "http://localhost:8000/storage/" . $imagem;
-        }
-        $user->save();
-        return response()->json(['mensagem' => 'Usuário atualizado com sucesso!'], 200);
 
     }
 }
