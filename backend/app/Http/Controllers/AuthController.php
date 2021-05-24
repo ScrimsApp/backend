@@ -56,13 +56,22 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json(["message" => "Error registering"], 400);
         }
-        $person_id = "#" . rand(1000, 9999);
        
+        do {
+            $person_id = "#" . rand(1000, 9999);
+            $user = User::query()
+                    ->where('person_id', $person_id)
+                    ->where('name', $request->name)
+                    ->select('*')
+                    ->first();
+        } while ($user);
+
         $image = "https://avatars.dicebear.com/api/micah/" . $request->name . ".svg?backgroundColor=%234767f9&height=150&width=150";
         $user = User::create(array_merge(
                     $validator->validated(),
                     ['password' => bcrypt($request->password),
                      'image' => $image,
+                     'description' => $request->description,
                      'person_id' => $person_id]
                 ));
                 // https://avatars.dicebear.com/api/micah/vinicius.svg?backgroundColor=%234767f9&height=250&width=250

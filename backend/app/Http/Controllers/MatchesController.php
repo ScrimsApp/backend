@@ -81,12 +81,12 @@ class MatchesController extends Controller
         
         $players = Team::find($match['team_1'])->players;
         $team = Team::find($match['team_1']);
-        $team['players'] = $players;
+        $team['players'] = $team->playersAtivos($players);
         $match['team_1'] = $team;
 
         $team2 = Team::find($match['team_2']);
         $players2 = Team::find($match['team_2'])->players;
-        $team2['players'] = $players2;
+        $team2['players'] = $team->playersAtivos($players2);
         $match['team_2'] = $team2;
 
 
