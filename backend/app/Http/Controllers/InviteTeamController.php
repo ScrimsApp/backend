@@ -80,7 +80,7 @@ class InviteTeamController extends Controller
             $user_logado->team_id = $team->id;
             if($user_logado->save()) {
                 $invite->save();
-                $return = ['message' => "Invitation successfully accepted!"];
+                $return = ['message' => 'Invitation successfully accepted!', 'team_id' => $team->id];
             }else{ 
                 $return = ['message' => 'Error accepting invitation!'];
             }
