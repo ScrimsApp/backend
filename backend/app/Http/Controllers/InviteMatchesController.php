@@ -15,8 +15,9 @@ class InviteMatchesController extends Controller
         $data = $request->all();
 
         $auth_user = auth()->user();
+        if($auth_user->team_id == $data['team_id']){ return response()->json(['message' => "It is not possible to invite the departure of your own team!"], 406); }
         if($this->verifyCaptain()){
-           $inviteMatch = InviteMatches::create([
+            $inviteMatch = InviteMatches::create([
                "match_id" => $data['match_id'],
                "team_2" => $auth_user->team_id,
                "status" => 1

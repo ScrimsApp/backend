@@ -65,30 +65,41 @@ class MatchesController extends Controller
     public function index(){
 
         $date = date('Y-m-d');
+        $time = date('H:i:s');
         $matches = Match::query()
                           ->join('teams', 'teams.id', 'matches.team_1')
                           ->where('status', 1)
-                          ->where('date' , '>', $date)
+                          ->where('date' , '>=', $date)
+                          ->where('time' , '>=', $time)
                           ->select('matches.id as match_id' , 'matches.*' , 'teams.*')
                           ->paginate(8);
-
-        return response()->json($matches, 200);
+        if($matches){
+            return response()->json($matches, 200);
+        }else{
+            return response()->json(['message' => "No matches found!"], 404);
+        }
+        
     }
 
     public function getMatch($id){
 
+        $auth_user = auth()->user();
         $match = Match::find($id);
-        
-        $players = Team::find($match['team_1'])->players;
-        $team = Team::find($match['team_1']);
-        $team['players'] = $team->playersAtivos($players);
-        $match['team_1'] = $team;
-
-        $team2 = Team::find($match['team_2']);
-        $players2 = Team::find($match['team_2'])->players;
-        $team2['players'] = $team->playersAtivos($players2);
-        $match['team_2'] = $team2;
-
+        if($match && ($match->team_1 == $auth_user->team_id || $match->team_2 == $auth_user->team_id)){
+            $players = Team::find($match['team_1'])->players;
+            $team = Team::find($match['team_1']);
+            $team['players'] = $team->playersAtivos($players);
+            $match['team_1'] = $team;
+    
+            $team2 = Team::find($match['team_2']);
+            $players2 = Team::find($match['team_2'])->players;
+            $team2['players'] = $team->playersAtivos($players2);
+            $match['team_2'] = $team2;
+    
+        }else{
+            return response()->json(['message' => "Match not found!"], 404);
+        }
+       
 
         return response()->json($match);
     }
