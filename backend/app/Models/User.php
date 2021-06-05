@@ -86,10 +86,9 @@ class User extends Authenticatable implements JWTSubject
                 "id" => $invitado->id,
                 'type' => $invitado->type,
                 'status' => $invite->status,
-                'team' => $team,
-                'player' => $user
+                'team' => $team
             ];
-            if($invitado->status === 1 && $invitado->type == "player"){
+            if($invitado->status === 1 && $invitado->type == "team"){
                 $arr_invites[] = $objInvite;
             }
         }

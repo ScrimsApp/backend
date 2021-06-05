@@ -14,6 +14,7 @@ class PlayerController extends Controller
 
         $user = auth()->user();
         $invites = $user->invites;
+        unset($user['invites']);
         $user['invites'] = $user->getInvitesAtivos($invites);
         $user['team'] = $user->team;
 
@@ -76,5 +77,25 @@ class PlayerController extends Controller
             return response()->json(['message' => 'User does not exist!'], 404);
         }
 
+    }
+
+    public function getInvitesAtivos($invites){
+
+        $arr_invites = array();
+        foreach($invites as $invite){
+            $invitado = InviteTeam::find($invite->id);
+            $team = Team::find($invitado->team_id);
+            $user = User::find($invitado->user_id);
+            $objInvite = [
+
+                'team' => $team,
+                'player' => $user
+            ];
+            if($invitado->status === 1 && $invitado->type == "player"){
+                $arr_invites[] = $objInvite;
+            }
+        }
+
+        return $arr_invites;
     }
 }
