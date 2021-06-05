@@ -80,12 +80,14 @@ class User extends Authenticatable implements JWTSubject
         $arr_invites = array();
         foreach($invites as $invite){
             $invitado = InviteTeam::find($invite->id);
+            $team = Team::find($invitado->team_id);
+            $user = Team::find($invitado->user_id);
             $objInvite = [
                 "id" => $invitado->id,
                 'type' => $invitado->type,
                 'status' => $invite->status,
-                'team' => $invitado->team,
-                'player' => $invitado->user
+                'team' => $team,
+                'player' => $user
             ];
             if($invitado->status === 1 && $invitado->type == "player"){
                 $arr_invites[] = $objInvite;
