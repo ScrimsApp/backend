@@ -76,7 +76,7 @@ Route::group([
 ], function ($router){
 
     Route::post('/', [MatchesController::class, 'store']);
-    Route::get('/', [MatchesController::class, 'match']);
+    Route::get('/', [MatchesController::class, 'matchNow']);
     Route::post('/delete' , [MatchesController::class, 'delete']);
     Route::get('/{id}', [MatchesController::class, 'getMatch']);
 });

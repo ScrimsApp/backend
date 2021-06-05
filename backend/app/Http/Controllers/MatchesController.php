@@ -81,6 +81,31 @@ class MatchesController extends Controller
         
     }
 
+    public function matchNow(){
+
+        $user = auth()->user();
+        $team = $user->team;
+
+        $date = date('Y-m-d');
+        $time = date('H:i:s');
+
+        $match = Match::query()
+                        ->where('status', 2)
+                        ->where('time' , '>',now()->format('H:i:s'))
+                        ->where('date' , '>=', $date)
+                        ->where('team_1', $team->id)
+                        ->orWhere('team_2', $team->id)
+                        ->orderBy('time', 'ASC')
+                        ->first();
+        if($match){
+            $matchFormatted = $this->getMatchInfo($match);
+            return response()->json($matchFormatted, 200);
+        }else{
+            return response()->json(['message' => "No match found!"], 404);
+        }
+        
+    }
+
     public function getMatch($id){
 
         $auth_user = auth()->user();
@@ -126,6 +151,28 @@ class MatchesController extends Controller
         return $arr_matches;
     }
 
+    private function getMatchInfo($match){
+        $user = auth()->user();
+        if($match->team_1 == $user->team_id){
+
+            $team = Team::find($match->team_2);
+
+        }elseif($match->team_2 == $user->team_id){
+
+            $team = Team::find($match->team_1);
+
+        }
+
+        $objMatch = [
+            'id' => $match->id,
+            'format' => $match->format,
+            'date' => $match->date,
+            'time' => $match->time,
+            'team' => $team
+        ];
+
+        return $objMatch;
+    }
     private function format_date_db($date){
         $date = explode('/', $date);
         $new_date = $date[2].'-'.$date[1].'-'.$date[0];
