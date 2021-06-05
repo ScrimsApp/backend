@@ -15,21 +15,30 @@ class InviteMatchesController extends Controller
         $data = $request->all();
 
         $auth_user = auth()->user();
-        if($auth_user->team_id == $data['team_id']){ return response()->json(['message' => "It is not possible to invite the departure of your own team!"], 406); }
-        if($this->verifyCaptain()){
-            $inviteMatch = InviteMatches::create([
-               "match_id" => $data['match_id'],
-               "team_2" => $auth_user->team_id,
-               "status" => 1
-           ]);
+        $match = Match::find($data['match_id']);
+        if($match){
+            if($auth_user->team_id == $match['team_1']){ return response()->json(['message' => "It is not possible to invite the departure of your own team!"], 406); }
+            if($this->verifyInviteExist($match->id, $auth_user->team_id)){
+                return response()->json(['message' => "It was not possible to send the invitation, you already have an existing one for this match!"], 406);
+            }else{
+                if($this->verifyCaptain()){
+                    $inviteMatch = InviteMatches::create([
+                        "match_id" => $data['match_id'],
+                        "team_2" => $auth_user->team_id,
+                        "status" => 1
+                    ]);
 
-           if($inviteMatch->save()) {
-               $return = ['message' => "Invite match created successfully!"];
-           }else{ 
-               $return = ['message' => 'Error creating match inviting!'];
-           }
+                    if($inviteMatch->save()) {
+                        $return = ['message' => "Invite match created successfully!"];
+                    }else{ 
+                        $return = ['message' => 'Error creating match inviting!'];
+                    }
+                }else{
+                    return response()->json(['message' => "You need to be the captain to creating match inviting!"], 403);
+                }
+            }
         }else{
-           return response()->json(['message' => "You need to be the captain to creating match inviting!"], 403);
+            return response()->json(['message' => "Match not found!"], 404);
         }
         return response()->json($return);
     }
@@ -85,5 +94,17 @@ class InviteMatchesController extends Controller
                 return false;
             }
         }
+    }
+
+    private function verifyInviteExist($match_id, $team_id){
+
+        $invites = InviteMatches::all();
+
+        foreach ($invites as $invite) {
+
+                if($invite->match_id == $match_id && $invite->team_2 == $team_id) { return true;}
+
+        }
+        return false;
     }
 }
