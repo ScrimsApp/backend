@@ -81,7 +81,7 @@ class User extends Authenticatable implements JWTSubject
         foreach($invites as $invite){
             $invitado = InviteTeam::find($invite->id);
             $team = Team::find($invitado->team_id);
-            $user = Team::find($invitado->user_id);
+            $user = User::find($invitado->user_id);
             $objInvite = [
                 "id" => $invitado->id,
                 'type' => $invitado->type,
