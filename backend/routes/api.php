@@ -76,11 +76,12 @@ Route::group([
 ], function ($router){
 
     Route::post('/', [MatchesController::class, 'store']);
-    Route::get('/', [MatchesController::class, 'index']);
+    Route::get('/', [MatchesController::class, 'match']);
     Route::post('/delete' , [MatchesController::class, 'delete']);
     Route::get('/{id}', [MatchesController::class, 'getMatch']);
 });
 
+Route::get('/', [MatchesController::class, 'index']);
 Route::get('teams', [TeamController::class, 'index']);
 Route::get('team/{id}', [TeamController::class, 'getTeam']);
 Route::get('players', [PlayerController::class, 'getPlayers']);
