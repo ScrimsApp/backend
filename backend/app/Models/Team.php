@@ -197,6 +197,21 @@ class Team extends Model
         $arr_matches = array();
         foreach($matches as $match){
             if($match->status !== 2){ continue; }
+
+            $match_time = date('H:i:s', strtotime($match->time));
+            $limit_time = new \DateTime($match_time);
+            $limit_time->modify('+3 hour');
+            $limit_time = $limit_time->format('H:i:s');
+
+            $before_time = new \DateTime($match_time);
+            $before_time->modify('-30 minutes');
+            $before_time = $before_time->format('H:i:s');
+
+            if($match->date == date('Y-m-d') && ($limit_time < date('H:i:s') )){
+                $match->status = 4;
+                $match->update();
+                continue;
+            }
             if($type === "visitors"){
                 $team = Team::find($match->team_1);
             }else{

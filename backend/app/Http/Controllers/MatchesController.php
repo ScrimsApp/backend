@@ -93,8 +93,10 @@ class MatchesController extends Controller
                         ->where('status', 2)
                         ->where('time' , '>',now()->format('H:i:s'))
                         ->where('date' , '>=', $date)
-                        ->where('team_1', $team->id)
-                        ->orWhere('team_2', $team->id)
+                        ->where(function($query) use ($team) {
+                            $query->where('team_1', $team->id)
+                            ->orWhere('team_2', $team->id);
+                        })
                         ->orderBy('time', 'ASC')
                         ->first();
         if($match){
@@ -109,24 +111,46 @@ class MatchesController extends Controller
     public function getMatch($id){
 
         $auth_user = auth()->user();
-        $match = Match::find($id);
+        $match = Match::query()
+                    ->where('date', '=', date('Y-m-d'))
+                    ->where('id', $id)
+                    ->first();
         if($match && ($match->team_1 == $auth_user->team_id || $match->team_2 == $auth_user->team_id)){
-            $players = Team::find($match['team_1'])->players;
-            $team = Team::find($match['team_1']);
-            $team['players'] = $team->playersAtivos($players);
-            $match['team_1'] = $team;
-    
-            $team2 = Team::find($match['team_2']);
-            $players2 = Team::find($match['team_2'])->players;
-            $team2['players'] = $team->playersAtivos($players2);
-            $match['team_2'] = $team2;
+            $match_time = date('H:i:s', strtotime($match->time));
+            $limit_time = new \DateTime($match_time);
+            $limit_time->modify('+3 hour');
+            $limit_time = $limit_time->format('H:i:s');
+
+            $before_time = new \DateTime($match_time);
+            $before_time->modify('-30 minutes');
+            $before_time = $before_time->format('H:i:s');
+
+            if($limit_time > date('H:i:s') && $before_time < date('H:i:s')){
+
+                $players = Team::find($match['team_1'])->players;
+                $team = Team::find($match['team_1']);
+                $team['players'] = $team->playersAtivos($players);
+                $match['team_1'] = $team;
+                
+                $team2 = Team::find($match['team_2']);
+                $players2 = Team::find($match['team_2'])->players;
+                $team2['players'] = $team->playersAtivos($players2);
+                $match['team_2'] = $team2;
+
+                return response()->json($match);
+
+            }else{
+                return response()->json(['message' => 'Match not yet available!'], 403);
+            }
+        
+            
     
         }else{
             return response()->json(['message' => "Match not found!"], 404);
         }
        
 
-        return response()->json($match);
+        
     }
 
     private function getMatchesCreated($matches){
