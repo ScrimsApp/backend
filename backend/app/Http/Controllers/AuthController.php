@@ -54,7 +54,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json(["message" => "Error registering"], 400);
+            return response()->json(['message' => $validator->errors()->first()], 400);
         }
        
         do {

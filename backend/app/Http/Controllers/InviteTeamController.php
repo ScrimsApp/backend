@@ -18,29 +18,30 @@ class InviteTeamController extends Controller
     public function invitePlayer(Request $request){
         
         $user_logado = auth()->user();
-        
-        
-        if($this->verifyCaptain()){
-
-            $team = Team::find($user_logado->team_id);
-            if($this->verifyInviteExist($team->id, $request->user_id, $request->type)){
-                return response()->json(['message' => "It was not possible to send the invitation, you already have an existing one for this player!"], 406);
-            }else{
-                $invite = InviteTeam::create([
-                    "type" => $request->type,
-                    "status" => 1,
-                    "team_id" => $user_logado->team_id,
-                    "user_id" => $request->user_id
-                ]);
-                if($invite->save()) {
-                    $return = ['message' => "Successfully invited player!"];
-                }else{ 
-                    $return = ['message' => 'Error inviting the player to the team!'];
+        $user_invitado = User::find($request->user_id);
+        if($user_invitado->team_id != null){ return response()->json(['message' => "This player is already on a team!"], 406);}
+        if($user_invitado){    
+            if($this->verifyCaptain()){
+                $team = Team::find($user_logado->team_id);
+                if($this->verifyInviteExist($team->id, $request->user_id, $request->type)){
+                    return response()->json(['message' => "It was not possible to send the invitation, you already have an existing one for this player!"], 406);
+                }else{
+                    $invite = InviteTeam::create([
+                        "type" => $request->type,
+                        "status" => 1,
+                        "team_id" => $user_logado->team_id,
+                        "user_id" => $request->user_id
+                    ]);
+                    if($invite->save()) {
+                        $return = ['message' => "Successfully invited player!"];
+                    }else{ 
+                        $return = ['message' => 'Error inviting the player to the team!'];
+                    }
                 }
+                return response()->json($return);
+            }else{
+                return response()->json(['message' => "You need to be the captain to invite a player!"], 403);
             }
-            return response()->json($return);
-        }else{
-            return response()->json(['message' => "You need to be the captain to invite a player!"], 403);
         }
     }
 
